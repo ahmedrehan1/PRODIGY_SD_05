@@ -1,0 +1,52 @@
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class EcommerceScraper {
+
+    public static void main(String[] args) {
+        // URL of the e-commerce website to scrape
+        String url = "https://www.example.com/products";
+
+        try {
+            // Connect to the website and get the HTML document
+            Document doc = Jsoup.connect(url).get();
+
+            // Select the elements containing product information
+            Elements products = doc.select(".product");
+
+            // Create a FileWriter to write data to a CSV file
+            FileWriter csvWriter = new FileWriter("product_info.csv");
+
+            // Write header to the CSV file
+            csvWriter.append("Product Name,Price,Rating\n");
+
+            // Loop through each product element and extract information
+            for (Element product : products) {
+                // Extract product name
+                String name = product.select(".product-name").text().trim();
+
+                // Extract product price
+                String price = product.select(".product-price").text().trim();
+
+                // Extract product rating
+                String rating = product.select(".product-rating").text().trim();
+
+                // Write product information to the CSV file
+                csvWriter.append(name).append(",").append(price).append(",").append(rating).append("\n");
+            }
+
+            // Close the FileWriter
+            csvWriter.flush();
+            csvWriter.close();
+
+            System.out.println("Product information has been extracted and saved to product_info.csv");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
